@@ -117,24 +117,34 @@ main { position: relative; z-index: 1; flex: 1; display: flex; overflow: hidden;
 /* CHAT WRAPPER */
 .chat-wrap { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
-/* ── WELCOME BANNER STICKY ── */
-/* Siempre visible en la parte superior del área de chat.
-   En desktop muestra 4 chips; en móvil muestra 6 botones en grid 2 cols. */
+/* SCROLL AREA — contiene el welcome + los mensajes */
+.messages-scroll {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.messages-scroll::-webkit-scrollbar { width: 4px; }
+.messages-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ── WELCOME BANNER — dentro del scroll, primer elemento ── */
+/* Se queda arriba al inicio pero el usuario puede scrollear sobre él.
+   No interrumpe el chat: los mensajes aparecen debajo y el scroll baja normalmente. */
 .welcome-banner {
   flex-shrink: 0;
   background: var(--white);
   border-bottom: 1px solid var(--border);
-  box-shadow: 0 2px 8px #1a7a4a08;
-  padding: 18px 20px 16px;
+  padding: 28px 20px 22px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-align: center;
-  z-index: 5;
 }
-.wb-logo { width: 50px; height: 50px; filter: drop-shadow(0 3px 10px #1a7a4a28); }
-.welcome-banner h2 { font-family: var(--font-serif); font-size: 21px; font-weight: 600; color: var(--green); line-height: 1.2; }
+.wb-logo { width: 56px; height: 56px; filter: drop-shadow(0 3px 10px #1a7a4a28); }
+.welcome-banner h2 { font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--green); line-height: 1.2; }
 .welcome-banner > p { color: var(--muted); font-size: 13px; max-width: 400px; }
 
 /* Chips desktop (4) */
@@ -190,34 +200,22 @@ main { position: relative; z-index: 1; flex: 1; display: flex; overflow: hidden;
 @media (max-width: 800px) {
   .chips-desktop { display: none; }
   .chips-mobile  { display: flex; }
-
-  .welcome-banner { padding: 12px 14px 12px; gap: 8px; }
-  .wb-logo { width: 38px; height: 38px; }
-  .welcome-banner h2 { font-size: 17px; }
+  .welcome-banner { padding: 20px 14px 18px; gap: 10px; }
+  .wb-logo { width: 44px; height: 44px; }
+  .welcome-banner h2 { font-size: 18px; }
   .welcome-banner > p { font-size: 12px; }
 }
 
-/* SCROLL AREA para mensajes */
-.messages-scroll {
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
-.messages-scroll::-webkit-scrollbar { width: 4px; }
-.messages-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
+/* MENSAJES */
 .messages {
-  flex: 1;
   max-width: 820px;
   width: 100%;
   margin: 0 auto;
-  padding: 20px 20px;
+  padding: 20px 20px 20px;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  /* No ocupa flex:1 aquí — el scroll lo maneja messages-scroll */
 }
 
 .msg { display: flex; gap: 10px; max-width: 100%; animation: fadeUp .22s ease both; }
@@ -350,46 +348,47 @@ textarea#msg:focus { border-color: var(--green-light); background: white; }
   </aside>
 
   <div class="chat-wrap">
+    <!-- Área scrolleable: welcome banner + mensajes juntos -->
+    <div class="messages-scroll">
 
-    <!-- WELCOME BANNER: sticky, siempre visible arriba del chat -->
-    <div class="welcome-banner">
-      <svg class="wb-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="40" cy="40" r="38" fill="#e8f7ef" stroke="#2ea86a" stroke-width="2"/>
-        <circle cx="40" cy="40" r="20" fill="white" stroke="#c5ecd8" stroke-width="1"/>
-        <path d="M40 22C40 22 30 33 30 40C30 45.5 34.5 50 40 50C45.5 50 50 45.5 50 40C50 33 40 22 40 22Z" fill="url(#wg)"/>
-        <defs>
-          <linearGradient id="wg" x1="30" y1="22" x2="50" y2="50" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#0ea5c9"/>
-          </linearGradient>
-        </defs>
-      </svg>
-      <h2>¿En qué te puedo ayudar?</h2>
-      <p>Soy el asistente virtual de HidroCar Perú. Pregúntame sobre el sistema, compatibilidad, precios o instalación.</p>
+      <!-- WELCOME BANNER: primer elemento del scroll.
+           El usuario puede scrollear sobre él hacia abajo para ver solo el chat. -->
+      <div class="welcome-banner">
+        <svg class="wb-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="40" cy="40" r="38" fill="#e8f7ef" stroke="#2ea86a" stroke-width="2"/>
+          <circle cx="40" cy="40" r="20" fill="white" stroke="#c5ecd8" stroke-width="1"/>
+          <path d="M40 22C40 22 30 33 30 40C30 45.5 34.5 50 40 50C45.5 50 50 45.5 50 40C50 33 40 22 40 22Z" fill="url(#wg)"/>
+          <defs>
+            <linearGradient id="wg" x1="30" y1="22" x2="50" y2="50" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#0ea5c9"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <h2>¿En qué te puedo ayudar?</h2>
+        <p>Soy el asistente virtual de HidroCar Perú. Pregúntame sobre el sistema, compatibilidad, precios o instalación.</p>
 
-      <!-- Desktop: 4 chips (sidebar visible, ya tiene las 6 opciones) -->
-      <div class="chips-desktop">
-        <span class="chip" onclick="sendQuick('¿Cómo funciona el sistema?')">⚡ ¿Cómo funciona?</span>
-        <span class="chip" onclick="sendQuick('¿Con qué motores es compatible?')">🔧 Compatibilidad</span>
-        <span class="chip" onclick="sendQuick('¿Cuánto cuesta?')">💰 Precios</span>
-        <span class="chip" onclick="sendQuick('¿Hacen envíos a provincias?')">📦 Envíos</span>
-      </div>
+        <!-- Desktop: 4 chips (sidebar visible ya tiene las 6 opciones) -->
+        <div class="chips-desktop">
+          <span class="chip" onclick="sendQuick('¿Cómo funciona el sistema?')">⚡ ¿Cómo funciona?</span>
+          <span class="chip" onclick="sendQuick('¿Con qué motores es compatible?')">🔧 Compatibilidad</span>
+          <span class="chip" onclick="sendQuick('¿Cuánto cuesta?')">💰 Precios</span>
+          <span class="chip" onclick="sendQuick('¿Hacen envíos a provincias?')">📦 Envíos</span>
+        </div>
 
-      <!-- Móvil: 6 botones en grid 2 cols (sidebar oculto) -->
-      <div class="chips-mobile">
-        <div class="mobile-quick-grid">
-          <button class="mobile-quick-btn" onclick="sendQuick('¿Cómo funciona el sistema de electrólisis de HidroCar?')"><span class="mqi">⚡</span> Cómo funciona</button>
-          <button class="mobile-quick-btn" onclick="sendQuick('¿Con qué tipos de motor es compatible?')"><span class="mqi">🔧</span> Compatibilidad</button>
-          <button class="mobile-quick-btn" onclick="sendQuick('¿Cuánto cuesta el sistema HidroCar?')"><span class="mqi">💰</span> Precios</button>
-          <button class="mobile-quick-btn" onclick="sendQuick('¿Dónde están ubicados los talleres?')"><span class="mqi">📍</span> Ubicación</button>
-          <button class="mobile-quick-btn" onclick="sendQuick('¿Qué garantía y mantenimiento tiene el equipo?')"><span class="mqi">🛡️</span> Garantía</button>
-          <button class="mobile-quick-btn" onclick="sendQuick('¿Hacen envíos a provincias?')"><span class="mqi">📦</span> Envíos</button>
+        <!-- Móvil: 6 botones en grid 2 cols (sidebar oculto) -->
+        <div class="chips-mobile">
+          <div class="mobile-quick-grid">
+            <button class="mobile-quick-btn" onclick="sendQuick('¿Cómo funciona el sistema de electrólisis de HidroCar?')"><span class="mqi">⚡</span> Cómo funciona</button>
+            <button class="mobile-quick-btn" onclick="sendQuick('¿Con qué tipos de motor es compatible?')"><span class="mqi">🔧</span> Compatibilidad</button>
+            <button class="mobile-quick-btn" onclick="sendQuick('¿Cuánto cuesta el sistema HidroCar?')"><span class="mqi">💰</span> Precios</button>
+            <button class="mobile-quick-btn" onclick="sendQuick('¿Dónde están ubicados los talleres?')"><span class="mqi">📍</span> Ubicación</button>
+            <button class="mobile-quick-btn" onclick="sendQuick('¿Qué garantía y mantenimiento tiene el equipo?')"><span class="mqi">🛡️</span> Garantía</button>
+            <button class="mobile-quick-btn" onclick="sendQuick('¿Hacen envíos a provincias?')"><span class="mqi">📦</span> Envíos</button>
+          </div>
         </div>
       </div>
-    </div>
-    <!-- FIN WELCOME BANNER -->
+      <!-- FIN WELCOME BANNER -->
 
-    <!-- Área scrolleable de mensajes -->
-    <div class="messages-scroll">
       <div class="messages" id="messages"></div>
     </div>
 
@@ -423,8 +422,8 @@ let history = [];
 let busy    = false;
 
 const memory = {
-  motor:     null,
-  ubicacion: null,
+  motor:       null,
+  ubicacion:   null,
   combustible: null,
 };
 
@@ -433,8 +432,8 @@ function buildWaUrl(forAsesor = false) {
   let msg = forAsesor
     ? 'Hola, quiero hablar con un asesor de HidroCar Perú'
     : 'Hola, quiero información sobre HidroCar Perú';
-  if (memory.motor)     msg += `. Mi motor es de ${memory.motor}`;
-  if (memory.ubicacion) msg += `. Estoy en ${memory.ubicacion}`;
+  if (memory.motor)       msg += `. Mi motor es de ${memory.motor}`;
+  if (memory.ubicacion)   msg += `. Estoy en ${memory.ubicacion}`;
   if (memory.combustible) msg += `. Mi combustible es ${memory.combustible}`;
   return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
 }
@@ -447,11 +446,11 @@ updateWaLinks();
 
 // ── DISPLAY DE CONTEXTO ──────────────────────────────────────────────────────
 function updateContextDisplay() {
-  const card  = document.getElementById('ctx-card');
-  const mRow  = document.getElementById('ctx-motor-row');
-  const uRow  = document.getElementById('ctx-ubi-row');
-  const mVal  = document.getElementById('ctx-motor-val');
-  const uVal  = document.getElementById('ctx-ubi-val');
+  const card = document.getElementById('ctx-card');
+  const mRow = document.getElementById('ctx-motor-row');
+  const uRow = document.getElementById('ctx-ubi-row');
+  const mVal = document.getElementById('ctx-motor-val');
+  const uVal = document.getElementById('ctx-ubi-val');
 
   if (memory.motor) {
     mVal.textContent   = memory.motor;
@@ -467,22 +466,14 @@ function updateContextDisplay() {
     uRow.style.display = 'none';
   }
 
-
-  if (memory.combustible) {
-    cVal.textContent   = memory.combustible;
-    cRow.style.display = 'block';
-  } else {
-    cRow.style.display = 'none';
-  }
-  
   card.style.display = (memory.motor || memory.ubicacion || memory.combustible) ? 'block' : 'none';
 }
 
 // ── EXTRACCIÓN DE CONTEXTO CON IA ────────────────────────────────────────────
 async function extractContextWithAI(userMsg) {
   const prevCtx = [];
-  if (memory.motor)     prevCtx.push(`Motor en memoria: ${memory.motor}`);
-  if (memory.ubicacion) prevCtx.push(`Ubicación en memoria: ${memory.ubicacion}`);
+  if (memory.motor)       prevCtx.push(`Motor en memoria: ${memory.motor}`);
+  if (memory.ubicacion)   prevCtx.push(`Ubicación en memoria: ${memory.ubicacion}`);
   if (memory.combustible) prevCtx.push(`Combustible en memoria: ${memory.combustible}`);
 
   const prompt = `Eres un extractor de datos preciso. Analiza el mensaje de un cliente peruano y extrae:
@@ -492,14 +483,13 @@ async function extractContextWithAI(userMsg) {
 
 ${prevCtx.length ? `DATOS PREVIOS EN MEMORIA:\n${prevCtx.join('\n')}\n` : ''}
 REGLAS:
-- Si el cliente CORRIGE datos anteriores (ej: "me equivoqué, vivo en Lima"), actualiza con el valor NUEVO y retorna null para el valor viejo que fue corregido (es decir, retorna el nuevo)
-- Acepta ubicaciones vagas: "abajo aquí en bellavista", "entre el jr tal y la av tal en Huánuco", "cerca de miraflores"
-- Acepta errores ortográficos y de capitalización: "VentaniIIA" → "Ventanilla", "huanuco" → "Huánuco"
-- Si menciona motor o ubicación de un TERCERO o del TALLER (no de él), retorna null para ese campo
-- Si no menciona motor o ubicación propia, retorna null para ese campo
-- Para el motor: normaliza a NNNNcc si es posible (ej: "1600" → "1600cc", "2.0" → "2000cc", "diésel 2500" → "2500cc diésel")
-- Para ubicación: devuelve la descripción tal como la dice el usuario, corrigiendo solo errores evidentes de ortografía
-- Para combustible: devuelve el tipo de combustible tal como lo menciona el usuario, corrigiendo solo errores evidentes de ortografía
+- Si el cliente CORRIGE datos anteriores (ej: "me equivoqué, vivo en Lima"), actualiza con el valor NUEVO
+- Acepta ubicaciones vagas: "abajo aquí en bellavista", "entre el jr tal y la av tal en Huánuco"
+- Acepta errores ortográficos: "VentaniIIA" → "Ventanilla", "huanuco" → "Huánuco"
+- Si menciona motor o ubicación de un TERCERO o del TALLER, retorna null para ese campo
+- Para el motor: normaliza a NNNNcc si es posible (ej: "1600" → "1600cc", "2.0" → "2000cc")
+- Para ubicación: devuelve la descripción corrigiendo solo errores evidentes
+- Para combustible: devuelve el tipo tal como lo menciona el usuario
 
 Responde ÚNICAMENTE con JSON válido (sin texto extra, sin backticks):
 {"motor": "valor" | null, "ubicacion": "valor" | null, "combustible": "valor" | null}
@@ -525,22 +515,15 @@ MENSAJE: "${userMsg}"`;
 
     let changed = false;
     if (parsed.motor !== null && parsed.motor !== undefined && String(parsed.motor).trim() !== '') {
-      memory.motor = String(parsed.motor).trim();
-      changed = true;
+      memory.motor = String(parsed.motor).trim(); changed = true;
     }
     if (parsed.ubicacion !== null && parsed.ubicacion !== undefined && String(parsed.ubicacion).trim() !== '') {
-      memory.ubicacion = String(parsed.ubicacion).trim();
-      changed = true;
+      memory.ubicacion = String(parsed.ubicacion).trim(); changed = true;
     }
     if (parsed.combustible !== null && parsed.combustible !== undefined && String(parsed.combustible).trim() !== '') {
-      memory.combustible = String(parsed.combustible).trim();
-      changed = true;
+      memory.combustible = String(parsed.combustible).trim(); changed = true;
     }
-
-    if (changed) {
-      updateContextDisplay();
-      updateWaLinks();
-    }
+    if (changed) { updateContextDisplay(); updateWaLinks(); }
   } catch (e) {
     console.warn('Context extraction error:', e.message);
   }
@@ -559,8 +542,8 @@ function buildWaBlock() {
   const cls      = hasDatos ? '' : 'needs-info';
 
   const missing = [];
-  if (!memory.motor)     missing.push('cilindraje de tu motor (ej: 1600cc)');
-  if (!memory.ubicacion) missing.push('tu distrito o ciudad');
+  if (!memory.motor)       missing.push('cilindraje de tu motor (ej: 1600cc)');
+  if (!memory.ubicacion)   missing.push('tu distrito o ciudad');
   if (!memory.combustible) missing.push('tipo de combustible');
 
   const hint = missing.length
@@ -568,8 +551,8 @@ function buildWaBlock() {
     : '';
 
   const parts = [];
-  if (memory.motor)     parts.push(`motor ${memory.motor}`);
-  if (memory.ubicacion) parts.push(`ubicado en ${memory.ubicacion}`);
+  if (memory.motor)       parts.push(`motor ${memory.motor}`);
+  if (memory.ubicacion)   parts.push(`ubicado en ${memory.ubicacion}`);
   if (memory.combustible) parts.push(`combustible ${memory.combustible}`);
   const preview = parts.length
     ? `Tu asesor sabrá que tienes ${parts.join(' y ')}.`
@@ -618,7 +601,7 @@ function appendMsg(role, text, waBlock = '') {
   div.appendChild(bub);
   c.appendChild(div);
   // Scroll el contenedor correcto (messages-scroll)
-  const scrollEl = c.parentElement;
+  const scrollEl = c.closest('.messages-scroll');
   scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: 'smooth' });
 }
 
@@ -628,7 +611,7 @@ function showTyping() {
   d.className = 'msg bot'; d.id = 'typing';
   d.innerHTML = `<div class="avatar">💧</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
   c.appendChild(d);
-  const scrollEl = c.parentElement;
+  const scrollEl = c.closest('.messages-scroll');
   scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: 'smooth' });
 }
 function hideTyping() { document.getElementById('typing')?.remove(); }
@@ -689,8 +672,8 @@ REGLAS DE RESPUESTA:
 // ── CALL OPENAI ───────────────────────────────────────────────────────────────
 async function callOpenAI(userMsg) {
   const memCtx = [];
-  if (memory.motor)     memCtx.push(`Motor del cliente: ${memory.motor}`);
-  if (memory.ubicacion) memCtx.push(`Ubicación del cliente: ${memory.ubicacion}`);
+  if (memory.motor)       memCtx.push(`Motor del cliente: ${memory.motor}`);
+  if (memory.ubicacion)   memCtx.push(`Ubicación del cliente: ${memory.ubicacion}`);
   if (memory.combustible) memCtx.push(`Combustible del cliente: ${memory.combustible}`);
 
   const sysWithCtx = memCtx.length
