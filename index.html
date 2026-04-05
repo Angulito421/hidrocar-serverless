@@ -332,6 +332,7 @@ textarea#msg:focus { border-color: var(--green-light); background: white; }
         <strong>Datos detectados</strong>
         <div id="ctx-motor-row" style="display:none;margin-bottom:4px">Motor: <span class="context-val" id="ctx-motor-val"></span></div>
         <div id="ctx-ubi-row" style="display:none">Ubicación: <span class="context-val" id="ctx-ubi-val"></span></div>
+        <div id="ctx-comb-row" style="display:none">Combustible: <span class="context-val" id="ctx-comb-val"></span></div>
       </div>
     </div>
 
@@ -451,6 +452,8 @@ function updateContextDisplay() {
   const uRow = document.getElementById('ctx-ubi-row');
   const mVal = document.getElementById('ctx-motor-val');
   const uVal = document.getElementById('ctx-ubi-val');
+  const cRow = document.getElementById('ctx-comb-row');
+  const cVal = document.getElementById('ctx-comb-val');
 
   if (memory.motor) {
     mVal.textContent   = memory.motor;
@@ -464,6 +467,13 @@ function updateContextDisplay() {
     uRow.style.display = 'block';
   } else {
     uRow.style.display = 'none';
+  }
+
+  if (memory.combustible) {
+    cVal.textContent   = memory.combustible;
+    cRow.style.display = 'block';
+  } else {
+    cRow.style.display = 'none';
   }
 
   card.style.display = (memory.motor || memory.ubicacion || memory.combustible) ? 'block' : 'none';
